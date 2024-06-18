@@ -2,7 +2,7 @@ package com.project.ecommerce_platform.controllers;
 
 import com.project.ecommerce_platform.models.SignupRequestDto;
 import com.project.ecommerce_platform.models.SignupResponseDto;
-import com.project.ecommerce_platform.services.UserService;
+import com.project.ecommerce_platform.services.user.UserServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -15,10 +15,10 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class UserController {
 
-    private final UserService userService;
+    private final UserServiceImpl userService;
 
     @PostMapping("/signup")
-    public ResponseEntity<SignupResponseDto> signup (@RequestBody SignupRequestDto signupRequestDto) throws Exception {
+    public ResponseEntity<SignupResponseDto> signup (@RequestBody SignupRequestDto signupRequestDto) {
         return userService.signup(signupRequestDto);
     }
 }

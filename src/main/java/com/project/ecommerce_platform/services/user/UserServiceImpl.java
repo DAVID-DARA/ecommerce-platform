@@ -1,11 +1,14 @@
-package com.project.ecommerce_platform.services;
+package com.project.ecommerce_platform.services.user;
 
 import com.project.ecommerce_platform.entities.User;
+import com.project.ecommerce_platform.exceptions.UserCreationException;
 import com.project.ecommerce_platform.models.SignupRequestDto;
 import com.project.ecommerce_platform.models.SignupResponseDto;
 import com.project.ecommerce_platform.repositories.UserRepository;
 import com.project.ecommerce_platform.utilities.Roles;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -14,17 +17,19 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
-public class UserService {
+public class UserServiceImpl implements UserService {
 
+    private static final Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
     private final UserRepository userRepository;
 
-    public ResponseEntity<SignupResponseDto> signup (SignupRequestDto signupRequestDto)throws Exception {
+    @Override
+    public ResponseEntity<SignupResponseDto> signup (SignupRequestDto signupRequestDto) {
         SignupResponseDto signupResponseDto = new SignupResponseDto();
 
-        Optional<User> requiredUser = userRepository.findByEmail(signupRequestDto.getEmail());
-        if (requiredUser.isPresent()) {
+        Optional<User> existingUser = userRepository.findByEmail(signupRequestDto.getEmail());
+        if (existingUser.isPresent()) {
             return ResponseEntity.status(HttpStatus.CONFLICT)
-                    .header("Content-Type", "Application/JSON")
+                    .header("Content-Type", "application/json")
                     .body(signupResponseDto);
         }
 
@@ -38,18 +43,18 @@ public class UserService {
         try{
             userRepository.save(newUser);
 
-            Optional<User> CREATED_NEW_USER = userRepository.findByEmail(signupRequestDto.getEmail());
-            User user = CREATED_NEW_USER.get();
-            Long CREATE_NEW_USERID = user.getUserId();
+            User savedUser = userRepository.save(newUser);
+            signupResponseDto.setId(savedUser.getUserId());
+            signupResponseDto.setEmail(savedUser.getEmail());
 
-            signupResponseDto.setId(CREATE_NEW_USERID);
-            signupResponseDto.setEmail(newUser.getEmail());
+            logger.info("New user successfully created with email: {}", savedUser.getEmail());
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error("Error creating new user", e);
+            throw new UserCreationException("Error creating new user", e);
         }
 
         return ResponseEntity.status(HttpStatus.CREATED)
-                .header("Content-Type", "Application/JSON")
+                .header("Content-Type", "application/json")
                 .body(signupResponseDto);
     }
 }
