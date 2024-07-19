@@ -5,4 +5,4 @@ RUN mvn clean package -DskipTests
 FROM openjdk:17.0.1-jdk-slim
 COPY --from=build /target/ecommerce-platform-0.0.1-SNAPSHOT.jar ecommerce-platform.jar
 EXPOSE 4032
-ENTRYPOINT ["java", "-jar", "demo.jar"]
+ENTRYPOINT ["java", "-jar", "ecommerce-platform.jar"]
