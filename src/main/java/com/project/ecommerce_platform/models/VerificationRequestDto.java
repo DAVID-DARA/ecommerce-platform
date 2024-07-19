@@ -7,7 +7,8 @@ import lombok.ToString;
 @Getter
 @Setter
 @ToString
-public class SignupResponseDto {
-    private Long id;
+public class VerificationRequestDto {
     private String email;
+    private String password;
+    private int otp;
 }

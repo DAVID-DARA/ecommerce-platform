@@ -1,14 +1,13 @@
 package com.project.ecommerce_platform.controllers;
 
-import com.project.ecommerce_platform.models.SignupRequestDto;
-import com.project.ecommerce_platform.models.SignupResponseDto;
+import com.project.ecommerce_platform.models.Login.LoginRequestDto;
+import com.project.ecommerce_platform.models.SignUp.SignupRequestDto;
+import com.project.ecommerce_platform.models.SignUp.SignupResponseDto;
+import com.project.ecommerce_platform.models.VerificationRequestDto;
 import com.project.ecommerce_platform.services.user.UserServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/user")
@@ -20,5 +19,15 @@ public class UserController {
     @PostMapping("/signup")
     public ResponseEntity<SignupResponseDto> signup (@RequestBody SignupRequestDto signupRequestDto) {
         return userService.signup(signupRequestDto);
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<?> login(@RequestBody LoginRequestDto loginRequestDto) {
+        return userService.login(loginRequestDto);
+    }
+
+    @PostMapping("/verify")
+    public ResponseEntity<?> verify(@RequestBody VerificationRequestDto verificationRequestDto) {
+        return userService.verifyUser(verificationRequestDto);
     }
 }
