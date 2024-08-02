@@ -81,13 +81,12 @@ public class UserServiceImpl implements UserService {
             logger.info("New user successfully created with email: {}", savedUser.getEmail());
             try {
                 otpRepository.save(otpEntity);
-
                 logger.info("OTP saved successfully");
                 try {
-                    emailService.sendWelcomeEmail(savedUser.getEmail(), savedUser.getFirst_name(), otpEntity.getOtp());
-                    logger.info("Mail Sent successfully");
+                    emailService.sendRegEmail(savedUser.getEmail(), savedUser.getFirst_name(), otpEntity.getOtp());
+                    logger.info("Mail Sent successfully to user");
                 } catch (Exception e) {
-                    logger.error("Error sending email", e);
+                    logger.error("Error sending email: {}", e.getMessage());
                 }
             } catch (Exception e) {
                 logger.error("Error saving new user OTP", e);
