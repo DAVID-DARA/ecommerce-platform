@@ -110,7 +110,7 @@ public class EmailService {
 
         String finalEmailContent = text.replace("${username}", userName).replace("${otp}", otpText);
 
-        message.setFrom(new InternetAddress("test@gmail.com"));
+        message.setFrom("test@gmail.com");
         message.setRecipients(MimeMessage.RecipientType.TO, to);
         message.setSubject(subject);
         message.setContent(finalEmailContent, "text/html; charset=utf-8");

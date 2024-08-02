@@ -1,7 +1,6 @@
 package com.project.ecommerce_platform.entities;
 
 import com.project.ecommerce_platform.utilities.Roles;
-
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -20,7 +19,7 @@ import java.util.List;
 public class User implements UserDetails {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long userId;
 
     @Column(nullable = false, unique = true)
@@ -68,3 +67,5 @@ public class User implements UserDetails {
         return true;
     }
 }
+
+

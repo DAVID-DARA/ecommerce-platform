@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
 @Table(name = "otp")
 public class Otp {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long token_id;
 
     @ManyToOne
