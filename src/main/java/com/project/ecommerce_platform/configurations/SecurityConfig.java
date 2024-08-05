@@ -72,7 +72,7 @@ public class SecurityConfig {
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         CorsConfiguration config = new CorsConfiguration();
         config.setAllowCredentials(true);
-        config.setAllowedOrigins(List.of("http://localhost:5173", "https://ecommerce-ui-iota.vercel.app/")); // Allow your frontend origin
+        config.setAllowedOrigins(List.of("http://localhost:5173", "https://ecommerce-ui-theta.vercel.app")); // Allow your frontend origin
         config.addAllowedHeader("*");
         config.addAllowedMethod("*");
         source.registerCorsConfiguration("/**", config);
