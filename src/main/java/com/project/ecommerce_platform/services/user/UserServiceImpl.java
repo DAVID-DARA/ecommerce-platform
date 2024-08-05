@@ -44,6 +44,7 @@ public class UserServiceImpl implements UserService {
     private final EmailService emailService;
     private final AuthenticationManager authenticationManager;
     private final PasswordEncoder passwordEncoder;
+    private final CustomUserDetailsService userDetailsService;
 
     @Override
     public ResponseEntity<SignupResponseDto> signup (SignupRequestDto signupRequestDto) {
@@ -120,26 +121,32 @@ public class UserServiceImpl implements UserService {
                 .body(loginResponse);
     }
 
+    @Override
     public ResponseEntity<?> verifyUser(VerificationRequestDto verificationRequest) {
         JwtAuthenticationResponse authenticationResponse = new JwtAuthenticationResponse();
 
-        Optional<User> user = userRepository.findByEmail(verificationRequest.getEmail());
-        User requiredUser = user.get();
-        Optional<Otp> userOtp = otpRepository.findByUser(requiredUser);
-        Otp verificationOtp = userOtp.get();
+        Optional<User> userOptional = userRepository.findByEmail(verificationRequest.getEmail());
+        if (userOptional.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
+        }
 
+        User user = userOptional.get();
+        Optional<Otp> otpOptional = otpRepository.findByUser(user);
+        if (otpOptional.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("OTP not found");
+        }
+
+        Otp verificationOtp = otpOptional.get();
         if (verificationOtp.getOtp() == verificationRequest.getOtp()) {
-            Authentication authentication = authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(
-                            verificationRequest.getEmail(),
-                            verificationRequest.getPassword()
-                    )
+            UserDetails userDetails = userDetailsService.loadUserByUsername(user.getEmail());
+            Authentication authentication = new UsernamePasswordAuthenticationToken(
+                    userDetails, user.getPassword(), userDetails.getAuthorities()
             );
             SecurityContextHolder.getContext().setAuthentication(authentication);
-            String jwtToken = jwtService.generateToken((UserDetails) authentication.getPrincipal());
+            String jwtToken = jwtService.generateToken(userDetails);
             authenticationResponse.setToken(jwtToken);
-
-            return ResponseEntity.status(HttpStatus.ACCEPTED)
+            logger.info("Verification successful {}: (redirect)", user.getEmail());
+            return ResponseEntity.status(HttpStatus.OK)
                     .header("Content-Type", "application/json")
                     .body(authenticationResponse);
         } else {
@@ -147,4 +154,5 @@ public class UserServiceImpl implements UserService {
                     .body("message: Wrong Otp");
         }
     }
+
 }

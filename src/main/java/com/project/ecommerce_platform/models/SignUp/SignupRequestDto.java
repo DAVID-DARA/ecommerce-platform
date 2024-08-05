@@ -7,6 +7,7 @@ import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import org.hibernate.annotations.Parameter;
 
 @Getter
 @Setter
@@ -27,7 +28,7 @@ public class SignupRequestDto {
     private String email;
 
     @NotBlank
-    @NotNull(message = "Please provide your lastname")
+    @NotNull(message = "Please provide your password")
     @Size(min =8, max = 16)
     private String password;
 }

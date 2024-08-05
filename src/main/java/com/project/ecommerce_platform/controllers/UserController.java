@@ -5,6 +5,7 @@ import com.project.ecommerce_platform.models.SignUp.SignupRequestDto;
 import com.project.ecommerce_platform.models.SignUp.SignupResponseDto;
 import com.project.ecommerce_platform.models.VerificationRequestDto;
 import com.project.ecommerce_platform.services.user.UserServiceImpl;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -17,12 +18,12 @@ public class UserController {
     private final UserServiceImpl userService;
 
     @PostMapping("/signup")
-    public ResponseEntity<SignupResponseDto> signup (@RequestBody SignupRequestDto signupRequestDto) {
+    public ResponseEntity<SignupResponseDto> signup (@Valid @RequestBody SignupRequestDto signupRequestDto) {
         return userService.signup(signupRequestDto);
     }
 
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody LoginRequestDto loginRequestDto) {
+    public ResponseEntity<?> login(@Valid @RequestBody LoginRequestDto loginRequestDto) {
         return userService.login(loginRequestDto);
     }
 
